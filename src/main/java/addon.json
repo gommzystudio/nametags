@@ -1,0 +1,10 @@
+{
+  "uuid": "%uuid%",
+  "name": "Nametags",
+  "mainClass": "de.gommzy.nametags.Main",
+  "description": "Set your own public nametag!",
+  "version": 1,
+  "author": "Gommzy",
+  "category": 2,
+  "icon": "http://116.203.34.222/logo_nametag.png"
+}
