@@ -15,6 +15,7 @@ import net.labymod.utils.Material;
 import net.labymod.utils.ServerData;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.lwjgl.Sys;
 
 import java.util.HashMap;
@@ -101,7 +102,7 @@ public class Main extends LabyModAddon {
     }
 
     @SubscribeEvent
-    public void onClick( GuiScreenEvent.MouseInputEvent event ) {
+    public void onClick(InputEvent.MouseInputEvent event) {
         if (changed) {
             changed = false;
             new Thread(new Runnable() {
