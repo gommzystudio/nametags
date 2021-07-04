@@ -3,7 +3,10 @@ package de.gommzy.nametags.session;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.gommzy.nametags.Main;
+import de.gommzy.nametags.screens.DisallowGui;
 import net.labymod.main.LabyMod;
+import net.minecraft.client.Minecraft;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -18,18 +21,22 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class Auth {
-    enum RESPONSE{NOPERMISSIONS,DISALLOW,SUCCESS};
+    enum RESPONSE{NOPERMISSIONS,DISALLOW,SUCCESS,FORBITTEN};
+    public static String token;
+    public static CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
 
     public static RESPONSE changeNametag(String newTag) {
         try {
-            CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
-            HttpPost httpPost = new HttpPost("http://116.203.34.222/getToken.php?username="+LabyMod.getInstance().getPlayerName());
-            httpPost.setHeader("Content-Type", "application/json");
-            HttpResponse response = closeableHttpClient.execute((HttpUriRequest)httpPost);
-            String token = EntityUtils.toString(response.getEntity());
+            if (token == null) {
+                closeableHttpClient = HttpClients.createDefault();
+                HttpPost httpPost = new HttpPost("http://116.203.34.222/getToken.php?username=" + LabyMod.getInstance().getPlayerName());
+                httpPost.setHeader("Content-Type", "application/json");
+                HttpResponse response = closeableHttpClient.execute((HttpUriRequest) httpPost);
+                token = EntityUtils.toString(response.getEntity());
+            }
 
             closeableHttpClient = HttpClients.createDefault();
-            httpPost = new HttpPost("https://sessionserver.mojang.com/session/minecraft/join");
+            HttpPost httpPost = new HttpPost("https://sessionserver.mojang.com/session/minecraft/join");
             httpPost.setHeader("Content-Type", "application/json");
             JsonObject request = new JsonObject();
             request.addProperty("accessToken",
@@ -37,20 +44,23 @@ public class Auth {
             request.addProperty("selectedProfile", LabyMod.getInstance().getPlayerId());
             request.addProperty("serverId", token);
             httpPost.setEntity((HttpEntity)new StringEntity((new Gson()).toJson((JsonElement)request)));
-            response = closeableHttpClient.execute((HttpUriRequest)httpPost);
+            HttpResponse response = closeableHttpClient.execute((HttpUriRequest)httpPost);
 
             closeableHttpClient = HttpClients.createDefault();
             httpPost = new HttpPost("http://116.203.34.222/changeTag.php?username="+LabyMod.getInstance().getPlayerName()+"&uuid="+LabyMod.getInstance().getPlayerUUID().toString().replace("-","")+"&token="+token+"&tag="+java.net.URLEncoder.encode(newTag, StandardCharsets.UTF_8.name()));
             httpPost.setHeader("Content-Type", "application/json");
             response = closeableHttpClient.execute((HttpUriRequest)httpPost);
             String result = EntityUtils.toString(response.getEntity());
-            System.out.println("RESULT123: "+result);
             if (result.contains("success")) {
                 return RESPONSE.SUCCESS;
             } else if (result.contains("permissions")) {
                 return RESPONSE.NOPERMISSIONS;
+            } else if (result.contains("forbitten")) {
+                Minecraft.getMinecraft().displayGuiScreen(new DisallowGui());
+                Main.addon.getConfig().addProperty("nametag", "censored");
+                Main.addon.saveConfig();
+                return RESPONSE.FORBITTEN;
             } else {
-                changeNametag(newTag);
                 return RESPONSE.DISALLOW;
             }
         } catch (IOException e) {

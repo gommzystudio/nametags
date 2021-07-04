@@ -13,6 +13,7 @@ import net.labymod.settings.elements.StringElement;
 import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
 import net.labymod.utils.ServerData;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -102,7 +103,7 @@ public class Main extends LabyModAddon {
     }
 
     @SubscribeEvent
-    public void onClick(InputEvent.MouseInputEvent event) {
+    public void onClick(GuiOpenEvent event) {
         if (changed) {
             changed = false;
             new Thread(new Runnable() {
