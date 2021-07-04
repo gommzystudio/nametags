@@ -35,7 +35,7 @@ public class Nametag {
             public void run() {
                 cooldown.put(uuid,new Date());
                 try {
-                    HttpPost httpPost = new HttpPost("http://116.203.34.222/tags/"+ uuid.replace("-",""));
+                    HttpPost httpPost = new HttpPost("http://api.labytags.de/tags/"+ uuid.replace("-",""));
                     httpPost.setHeader("Content-Type", "application/json");
                     HttpResponse response = closeableHttpClient.execute((HttpUriRequest)httpPost);
                     nametags.put(uuid,EntityUtils.toString(response.getEntity()));

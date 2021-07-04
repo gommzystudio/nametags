@@ -29,7 +29,7 @@ public class Auth {
         try {
             if (token == null) {
                 closeableHttpClient = HttpClients.createDefault();
-                HttpPost httpPost = new HttpPost("http://116.203.34.222/getToken.php?username=" + LabyMod.getInstance().getPlayerName());
+                HttpPost httpPost = new HttpPost("http://api.labytags.de/getToken.php?username=" + LabyMod.getInstance().getPlayerName());
                 httpPost.setHeader("Content-Type", "application/json");
                 HttpResponse response = closeableHttpClient.execute((HttpUriRequest) httpPost);
                 token = EntityUtils.toString(response.getEntity());
@@ -47,7 +47,7 @@ public class Auth {
             HttpResponse response = closeableHttpClient.execute((HttpUriRequest)httpPost);
 
             closeableHttpClient = HttpClients.createDefault();
-            httpPost = new HttpPost("http://116.203.34.222/changeTag.php?username="+LabyMod.getInstance().getPlayerName()+"&uuid="+LabyMod.getInstance().getPlayerUUID().toString().replace("-","")+"&token="+token+"&tag="+java.net.URLEncoder.encode(newTag, StandardCharsets.UTF_8.name()));
+            httpPost = new HttpPost("http://api.labytags.de/changeTag.php?username="+LabyMod.getInstance().getPlayerName()+"&uuid="+LabyMod.getInstance().getPlayerUUID().toString().replace("-","")+"&token="+token+"&tag="+java.net.URLEncoder.encode(newTag, StandardCharsets.UTF_8.name()));
             httpPost.setHeader("Content-Type", "application/json");
             response = closeableHttpClient.execute((HttpUriRequest)httpPost);
             String result = EntityUtils.toString(response.getEntity());
