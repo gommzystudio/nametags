@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class Nametag {
     public static HashMap<String, String> nametags = new HashMap<String, String>();
-    public static HashMap<String, Date> cooldown = new HashMap<>();
+    public static HashMap<String, Date> cooldown = new HashMap<String, Date>();
     public static CloseableHttpClient closeableHttpClient = HttpClients.createDefault();
     public static ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(5);
 
