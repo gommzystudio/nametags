@@ -160,7 +160,11 @@ public class RenderPlayerImplementation implements RenderPlayerAdapter {
                     String formattedNametag = null;
                     if (!nametag.contains("<title>404 Not Found</title>")) {
                         formattedNametag =  ModColor.cl("e")+ModColor.cl("o")+ nametag;
-                        if (labyGroup != null && labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD && seconds%10 < 5 || formattedNametag == null) {
+                        if (labyGroup != null && labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD && seconds % 10 < 5) {
+                            formattedNametag = labyGroup.getDisplayTag();
+                        }
+                    } else {
+                        if (labyGroup != null && labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD) {
                             formattedNametag = labyGroup.getDisplayTag();
                         }
                     }
