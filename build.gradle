@@ -105,6 +105,6 @@ task downloadAPI(type: Download) {
         libraryDirectory.mkdirs()
     }
 
-    src "https://dl.labymod.net/latest/api/files/lm_api_mc1.16.5.jar"
+    src "https://dl.labymod.net/latest/api/files/lm_api_mc1.8.9.jar"
     dest 'libs/'
 }
