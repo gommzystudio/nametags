@@ -44,7 +44,7 @@ public class BadgeReciver {
                             httpPost.setHeader("Content-Type", "application/json");
                             HttpResponse response = closeableHttpClient.execute((HttpUriRequest)httpPost);
                             String responseString = EntityUtils.toString(response.getEntity());
-                            ArrayList<Badge> badgesList = new ArrayList<>();
+                            ArrayList<Badge> badgesList = new ArrayList<Badge>();
                             if (!responseString.contains("[]") && !responseString.contains("User not found")) {
                                 try {
                                     for (String loop : responseString.split("\",\"name\":\"")) {
@@ -67,7 +67,7 @@ public class BadgeReciver {
         });
     }
 
-    public static ArrayList<String> blacklist = new ArrayList<>();
+    public static ArrayList<String> blacklist = new ArrayList<String>();
 
     public static void downloadImage(String uuid) {
         try {
