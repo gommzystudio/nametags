@@ -7,6 +7,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -75,6 +79,31 @@ public class BadgeReciver {
                 return;
             }
             blacklist.add(uuid);
+
+            // Create a trust manager that does not validate certificate chains
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+                        public void checkClientTrusted(
+                                java.security.cert.X509Certificate[] certs, String authType) {
+                        }
+                        public void checkServerTrusted(
+                                java.security.cert.X509Certificate[] certs, String authType) {
+                        }
+                    }
+            };
+
+            // Install the all-trusting trust manager
+            try {
+                SSLContext sc = SSLContext.getInstance("SSL");
+                sc.init(null, trustAllCerts, new java.security.SecureRandom());
+                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            } catch (Exception e) {
+            }
+
+            // Now you can access an https URL without having the certificate in the truststore
             URLConnection openConnection= new URL("https://laby.net/texture/badge-small/"+uuid+".png").openConnection();
             openConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
             InputStream in = new BufferedInputStream(openConnection.getInputStream());
