@@ -1,10 +1,10 @@
 {
   "uuid": "%uuid%",
-  "name": "Nametags",
+  "name": "Badges",
   "mainClass": "de.gommzy.nametags.Main",
-  "description": "Set your own public nametag!",
+  "description": "This addon shows laby.net badges behind the username!",
   "version": 1,
   "author": "Gommzy",
   "category": 2,
-  "icon": "http://116.203.34.222/logo_nametag.png"
+  "icon": "http://168.119.232.99/addon-logo.png"
 }

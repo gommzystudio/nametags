@@ -1,7 +1,8 @@
 package de.gommzy.nametags.render;
 
 
-import de.gommzy.nametags.api.Nametag;
+import de.gommzy.nametags.api.Badge;
+import de.gommzy.nametags.api.BadgeReciver;
 import net.labymod.core.LabyModCore;
 import net.labymod.core.RenderPlayerAdapter;
 import net.labymod.core.WorldRendererAdapter;
@@ -24,19 +25,19 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.entity.layers.LayerCustomHead;
 import net.minecraft.client.renderer.entity.layers.LayerDeadmau5Head;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class RenderPlayerImplementation implements RenderPlayerAdapter {
@@ -138,6 +139,29 @@ public class RenderPlayerImplementation implements RenderPlayerAdapter {
                         GlStateManager.popMatrix();
                     }
 
+                    int loops = 0;
+                    ArrayList<Badge> badgeList = BadgeReciver.getBadge(user.getUuid().toString());
+                    if (badgeList != null) {
+                        for (Badge badge : badgeList) {
+                            loops++;
+                            GlStateManager.pushMatrix();
+                            GlStateManager.translate((float) x, (float) y + entity.height + 0.5F - (entity.isChild() ? entity.height / 2.0F : 0.0F), (float) z);
+                            GlStateManager.rotate(-renderPlayer.getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+                            GlStateManager.rotate(fixedPlayerViewX, 1.0F, 0.0F, 0.0F);
+                            GlStateManager.scale(-0.02666667F, -0.02666667F, 0.02666667F);
+                            GlStateManager.disableLighting();
+                            GlStateManager.disableBlend();
+                            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+                            size = (double) (fontrenderer.getStringWidth(username) / 2 + 10 * loops - 8);
+                            badge.renderBadge(size, -0.5D);
+                            GlStateManager.enableLighting();
+                            GlStateManager.disableBlend();
+                            GlStateManager.resetColor();
+                            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                            GlStateManager.popMatrix();
+                        }
+                    }
+
                     this.renderLivingLabelCustom(renderPlayer, entity, username, x, y - (entity.isChild() ? (double)(entity.height / 2.0F) : 0.0D), z, 64);
                     if (tagName != null) {
                         GlStateManager.pushMatrix();
@@ -155,25 +179,12 @@ public class RenderPlayerImplementation implements RenderPlayerAdapter {
                         GlStateManager.popMatrix();
                     }
 
-                    int seconds = new Date().getSeconds();
-                    String nametag = Nametag.getNametag(user.getUuid().toString());
-                    String formattedNametag = null;
-                    if (!nametag.contains("<title>404 Not Found</title>")) {
-                        formattedNametag =  ModColor.cl("e")+ModColor.cl("o")+ nametag;
-                        if (labyGroup != null && labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD && seconds % 10 < 5) {
-                            formattedNametag = labyGroup.getDisplayTag();
-                        }
-                    } else {
-                        if (labyGroup != null && labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD) {
-                            formattedNametag = labyGroup.getDisplayTag();
-                        }
-                    }
-                    if (formattedNametag != null) {
+                    if (labyGroup != null && labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD) {
                         GlStateManager.pushMatrix();
                         size = 0.5D;
                         GlStateManager.scale(size, size, size);
                         GlStateManager.translate(0.0D, 2.0D, 0.0D);
-                        this.renderLivingLabelCustom(renderPlayer, entity, formattedNametag, x / size, (y - (entity.isChild() ? (double) (entity.height / 2.0F) : 0.0D) + 0.3D) / size, z / size, 10);
+                        this.renderLivingLabelCustom(renderPlayer, entity, labyGroup.getDisplayTag(), x / size, (y - (entity.isChild() ? (double)(entity.height / 2.0F) : 0.0D) + 0.3D) / size, z / size, 10);
                         GlStateManager.popMatrix();
                     }
                 }
