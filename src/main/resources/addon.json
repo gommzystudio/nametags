@@ -2,7 +2,7 @@
   "uuid": "%uuid%",
   "name": "Badges",
   "mainClass": "de.gommzy.nametags.Main",
-  "description": "This addon shows LABY.net badges behind the username!",
+  "description": "This addon shows LABY.net badges above the username!",
   "version": 1,
   "author": "Gommzy",
   "category": 2,

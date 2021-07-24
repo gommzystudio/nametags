@@ -152,8 +152,12 @@ public class RenderPlayerImplementation implements RenderPlayerAdapter {
                             GlStateManager.disableLighting();
                             GlStateManager.disableBlend();
                             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-                            size = (double) (fontrenderer.getStringWidth(username) / 2 + 10 * loops + 2);
-                            badge.renderBadge(size, -0.5D);
+                            double xOffset = badgeList.size()*5d - (10d * badgeList.size())/loops  + 2 * (badgeList.size()-1);
+                            double yOffset = -10D;
+                            if (labyGroup != null && labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD) {
+                                yOffset-=6.5D;
+                            }
+                            badge.renderBadge(xOffset, yOffset);
                             GlStateManager.enableLighting();
                             GlStateManager.disableBlend();
                             GlStateManager.resetColor();
