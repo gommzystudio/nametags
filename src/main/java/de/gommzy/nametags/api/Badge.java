@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import java.io.File;
 
 public class Badge {
-    String uuid;
+   public  String uuid;
 
     public Badge(String uuid) {
         this.uuid = uuid;

@@ -22,28 +22,41 @@ public class RenderListener implements RenderEntityEvent {
     public void onRender(Entity entity, double x, double y, double z, float partialTicks) {
         float fixedPlayerViewX = Minecraft.getMinecraft().getRenderManager().playerViewX * (float) (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2 ? -1 : 1);
         User user = entity instanceof EntityPlayer ? LabyMod.getInstance().getUserManager().getUser(entity.getUniqueID()) : null;
-        if (user != null) {
+        if (user != null && !entity.isSneaking()) {
             LabyGroup labyGroup = user.getGroup();
             if (labyGroup != null) {
                 int loops = 0;
-                ArrayList<Badge> badgeList = BadgeReciver.getBadge(user.getUuid().toString());
-                if (badgeList != null) {
+                ArrayList<Badge> tempBadgeList = BadgeReciver.getBadge(user.getUuid().toString());
+                if (tempBadgeList != null) {
+                    ArrayList<Badge> badgeList = new ArrayList<Badge>();
+                    for (Badge badge : tempBadgeList) {
+                        if (!(badge.uuid.equals("cbcf5a7c-d325-4c5e-b918-adbc98343195") && labyGroup.getDisplayType() != EnumGroupDisplayType.ABOVE_HEAD)) {
+                            badgeList.add(badge);
+                        }
+                    }
+
                     for (Badge badge : badgeList) {
                         loops++;
+
+                        double xOffset = badgeList.size() * 5d - (10d * loops) + 2 * (loops - 1);
+                        double yOffset = -10D;
+                        if (labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD) {
+                            yOffset -= 6.5D;
+                        }
+
+                        float maxNameTagHeight = LabyMod.getSettings().cosmetics ? user.getMaxNameTagHeight() : 0.0F;
+                        yOffset += maxNameTagHeight;
+
                         GlStateManager.pushMatrix();
-                        GlStateManager.translate((float) x, (float) y + entity.height + 0.5F, (float) z);
-                        GlStateManager.rotate(-Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
-                        GlStateManager.rotate(fixedPlayerViewX, 1.0F, 0.0F, 0.0F);
+                        GlStateManager.translate((float) x, (float) y + entity.height + 0.5F , (float) z);
                         GlStateManager.scale(-0.02666667F, -0.02666667F, 0.02666667F);
+                        GlStateManager.translate((float) 0, yOffset, (float) 0);
+                        GlStateManager.rotate(Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+                        GlStateManager.rotate(-fixedPlayerViewX, 1.0F, 0.0F, 0.0F);
                         GlStateManager.disableLighting();
                         GlStateManager.disableBlend();
                         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-                        double xOffset = badgeList.size() * 5d - (10d * loops) + 2 * (loops - 1);
-                        double yOffset = -10D;
-                        if (labyGroup != null && labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD) {
-                            yOffset -= 6.5D;
-                        }
-                        badge.renderBadge(xOffset, yOffset);
+                        badge.renderBadge(xOffset,0);
                         GlStateManager.enableLighting();
                         GlStateManager.disableBlend();
                         GlStateManager.resetColor();

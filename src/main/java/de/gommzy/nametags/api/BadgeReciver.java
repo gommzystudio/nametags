@@ -54,11 +54,9 @@ public class BadgeReciver {
                                 try {
                                     for (String loop : responseString.split("\",\"name\":\"")) {
                                         String badgeuuid = loop.split("\"uuid\":\"")[1];
-                                        if (!badgeuuid.contains("cbcf5a7c-d325-4c5e-b918-adbc98343195")) {
-                                            Badge badge = new Badge(badgeuuid);
-                                            badgesList.add(badge);
-                                            badges.put(uuid, badgesList);
-                                        }
+                                        Badge badge = new Badge(badgeuuid);
+                                        badgesList.add(badge);
+                                        badges.put(uuid, badgesList);
                                     }
                                 } catch (Exception ignored) {}
                             }
