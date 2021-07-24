@@ -1,13 +1,10 @@
 package de.gommzy.nametags.api;
 
 import net.labymod.main.LabyMod;
+import net.labymod.main.ModTextures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.util.ResourceLocation;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class Badge {
@@ -18,18 +15,13 @@ public class Badge {
     }
 
     public void renderBadge(double x, double y) {
-        File file = new File(System.getProperty("user.dir") + "\\LabyMod\\badges\\"+uuid+".png");
-        if (!file.exists()) {
-            return;
-        }
-
         try {
-            File img = new File(System.getProperty("user.dir") + "\\LabyMod\\badges\\" + uuid + ".png");
-            BufferedImage image = ImageIO.read(img);
-            DynamicTexture dt = new DynamicTexture(image);
-            ResourceLocation texture = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation(".png", dt);
             GlStateManager.enableBlend();
-            Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+            if(BadgeReciver.badgeDynamicTextureManager == null) {
+                BadgeReciver.badgeDynamicTextureManager = new BadgeDynamicTextureManager("labymodbadges", ModTextures.MISC_HEAD_QUESTION);
+                BadgeReciver.badgeDynamicTextureManager.init();
+            }
+            Minecraft.getMinecraft().getTextureManager().bindTexture(BadgeReciver.badgeDynamicTextureManager.getTexture(uuid,"https://laby.net/texture/badge-small/"+uuid+".png"));
             LabyMod.getInstance().getDrawUtils().drawTexture(x, y, 255.0D, 255.0D, 8.0D, 8.0D, 1.1F);
             GlStateManager.color(1.0F, 1.0F, 1.0F);
         } catch (Exception e) {

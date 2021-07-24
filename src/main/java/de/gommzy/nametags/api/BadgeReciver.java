@@ -1,8 +1,6 @@
 package de.gommzy.nametags.api;
 
-import net.labymod.main.LabyMod;
-import net.labymod.utils.texture.ThreadDownloadTextureImage;
-import net.minecraft.util.ResourceLocation;
+import net.labymod.main.ModTextures;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -10,27 +8,21 @@ import org.apache.http.conn.ssl.*;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.lwjgl.Sys;
 
-import javax.net.ssl.*;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class BadgeReciver {
-    public static HashMap<String, ResourceLocation> badgeRessourceLocations = new HashMap<String, ResourceLocation>();
+    public static HashMap<String, String> badgeRessourceLocations = new HashMap<String, String>();
     public static ArrayList<String> downloaded = new ArrayList<String>();
     public static HashMap<String, ArrayList<Badge>> badges = new HashMap<String, ArrayList<Badge>>();
     public static ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(5);
+    public static BadgeDynamicTextureManager badgeDynamicTextureManager;
 
     public static void load(final String uuid) {
         executor.execute(new Runnable() {
@@ -62,10 +54,9 @@ public class BadgeReciver {
                                     for (String loop : responseString.split("\",\"name\":\"")) {
                                         String badgeuuid = loop.split("\"uuid\":\"")[1];
                                         if (!badgeuuid.contains("cbcf5a7c-d325-4c5e-b918-adbc98343195")) {
-                                        downloadImage(badgeuuid);
-                                        Badge badge = new Badge(badgeuuid);
-                                        badgesList.add(badge);
-                                        badges.put(uuid, badgesList);
+                                            Badge badge = new Badge(badgeuuid);
+                                            badgesList.add(badge);
+                                            badges.put(uuid, badgesList);
                                         }
                                     }
                                 } catch (Exception ignored) {}
@@ -76,20 +67,6 @@ public class BadgeReciver {
             }
         });
     }
-
-    public static void downloadImage(String uuid) {
-        try {
-            if (downloaded.contains(uuid)) {
-                return;
-            }
-            downloaded.add(uuid);
-
-            badgeRessourceLocations.put(uuid, LabyMod.getInstance().getDynamicTextureManager().getTexture(uuid,"https://laby.net/texture/badge-small/"+uuid+".png"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public static ArrayList<Badge> getBadge(final String uuid) {
         try {

@@ -152,7 +152,7 @@ public class RenderPlayerImplementation implements RenderPlayerAdapter {
                             GlStateManager.disableLighting();
                             GlStateManager.disableBlend();
                             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-                            double xOffset = badgeList.size()*5d - (10d * badgeList.size())/loops  + 2 * (badgeList.size()-1);
+                            double xOffset = badgeList.size()*5d - (10d * loops)  + 2 * (loops-1);
                             double yOffset = -10D;
                             if (labyGroup != null && labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD) {
                                 yOffset-=6.5D;
