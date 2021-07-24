@@ -38,7 +38,7 @@ public class RenderListener implements RenderEntityEvent {
                     for (Badge badge : badgeList) {
                         loops++;
 
-                        double xOffset = badgeList.size() * 5d - (10d * loops) + 2 * (loops - 1);
+                        double xOffset = badgeList.size() * 5d - (10d * (badgeList.size()-(loops-1))) + 2 * (loops - 1);
                         double yOffset = -10D;
                         if (labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD) {
                             yOffset -= 6.5D;
