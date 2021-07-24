@@ -1,6 +1,8 @@
 package de.gommzy.nametags.api;
 
+import net.labymod.main.LabyMod;
 import net.labymod.utils.texture.ThreadDownloadTextureImage;
+import net.minecraft.util.ResourceLocation;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -25,25 +27,19 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class BadgeReciver {
+    public static HashMap<String, ResourceLocation> badgeRessourceLocations = new HashMap<String, ResourceLocation>();
+    public static ArrayList<String> downloaded = new ArrayList<String>();
     public static HashMap<String, ArrayList<Badge>> badges = new HashMap<String, ArrayList<Badge>>();
-    public static HashMap<String, Date> cooldown = new HashMap<String, Date>();
-    public static ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+    public static ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(5);
 
     public static void load(final String uuid) {
-        if (cooldown.containsKey(uuid)) {
-            long diffInMillies = Math.abs(new Date().getTime() - cooldown.get(uuid).getTime());
-            long diff = TimeUnit.SECONDS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-            if (diff < 10) {
-                return;
-            }
-        }
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        cooldown.put(uuid,new Date());
+                if (badges.containsKey(uuid)) {
+                    return;
+                }
+                badges.put(uuid,new ArrayList<Badge>());
                         try {
                             CloseableHttpClient httpClient = HttpClients.custom()
                                     .setSSLSocketFactory(new SSLConnectionSocketFactory(SSLContexts.custom()
@@ -65,65 +61,30 @@ public class BadgeReciver {
                                 try {
                                     for (String loop : responseString.split("\",\"name\":\"")) {
                                         String badgeuuid = loop.split("\"uuid\":\"")[1];
-                                        //if (!badgeuuid.contains("cbcf5a7c-d325-4c5e-b918-adbc98343195")) {
+                                        if (!badgeuuid.contains("cbcf5a7c-d325-4c5e-b918-adbc98343195")) {
                                         downloadImage(badgeuuid);
                                         Badge badge = new Badge(badgeuuid);
                                         badgesList.add(badge);
                                         badges.put(uuid, badgesList);
-                                        //}
+                                        }
                                     }
                                 } catch (Exception ignored) {}
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
-                }).start();
             }
         });
     }
 
-    public static ArrayList<String> blacklist = new ArrayList<String>();
-
     public static void downloadImage(String uuid) {
         try {
-            if (blacklist.contains(uuid)) {
+            if (downloaded.contains(uuid)) {
                 return;
             }
-            blacklist.add(uuid);
+            downloaded.add(uuid);
 
-            CloseableHttpClient httpClient = HttpClients.custom()
-                    .setSSLSocketFactory(new SSLConnectionSocketFactory(SSLContexts.custom()
-                                    .loadTrustMaterial(null, new TrustStrategy() {
-                                        @Override
-                                        public boolean isTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-                                            return true;
-                                        }
-                                    })
-                                    .build()
-                            )
-                    ).build();
-            HttpPost httpPost = new HttpPost("https://laby.net/texture/badge-small/"+uuid+".png");
-            httpPost.setHeader("Content-Type", "application/json");
-            HttpResponse httpResponse = httpClient.execute((HttpUriRequest)httpPost);
-            InputStream in = new BufferedInputStream(httpResponse.getEntity().getContent());
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            byte[] buf = new byte[1024];
-            int n = 0;
-            while (-1!=(n=in.read(buf)))
-            {
-                out.write(buf, 0, n);
-            }
-            out.close();
-            in.close();
-            byte[] response = out.toByteArray();
-            File directory = new File(System.getProperty("user.dir") + "\\LabyMod\\badges");
-            if (! directory.exists()){
-                directory.mkdir();
-            }
-            FileOutputStream fos = new FileOutputStream(System.getProperty("user.dir") + "\\LabyMod\\badges\\"+uuid+".png");
-            fos.write(response);
-            fos.close();
+            badgeRessourceLocations.put(uuid, LabyMod.getInstance().getDynamicTextureManager().getTexture(uuid,"https://laby.net/texture/badge-small/"+uuid+".png"));
         } catch (Exception e) {
             e.printStackTrace();
         }
