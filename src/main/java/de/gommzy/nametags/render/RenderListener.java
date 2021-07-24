@@ -45,10 +45,9 @@ public class RenderListener implements RenderEntityEvent {
                         }
 
                         float maxNameTagHeight = LabyMod.getSettings().cosmetics ? user.getMaxNameTagHeight() : 0.0F;
-                        yOffset += maxNameTagHeight;
 
                         GlStateManager.pushMatrix();
-                        GlStateManager.translate((float) x, (float) y + entity.height + 0.5F , (float) z);
+                        GlStateManager.translate((float) x, (float) y + entity.height + 0.5F + maxNameTagHeight, (float) z);
                         GlStateManager.scale(-0.02666667F, -0.02666667F, 0.02666667F);
                         GlStateManager.translate((float) 0, yOffset, (float) 0);
                         GlStateManager.rotate(Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
