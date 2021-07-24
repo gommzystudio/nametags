@@ -2,6 +2,7 @@ package de.gommzy.nametags.api;
 
 import net.labymod.main.ModTextures;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ssl.*;
@@ -44,9 +45,9 @@ public class BadgeReciver {
                                                     .build()
                                             )
                                     ).build();
-                            HttpPost httpPost = new HttpPost("https://laby.net/api/user/"+ uuid+"/get-badges");
-                            httpPost.setHeader("Content-Type", "application/json");
-                            HttpResponse response = httpClient.execute((HttpUriRequest)httpPost);
+                            HttpGet httpGet = new HttpGet("https://laby.net/api/user/"+ uuid+"/get-badges");
+                            httpGet.setHeader("Content-Type", "application/json");
+                            HttpResponse response = httpClient.execute((HttpUriRequest)httpGet);
                             String responseString = EntityUtils.toString(response.getEntity());
                             ArrayList<Badge> badgesList = new ArrayList<Badge>();
                             if (!responseString.contains("[]") && !responseString.contains("User not found")) {
