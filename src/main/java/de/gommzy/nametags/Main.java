@@ -4,6 +4,7 @@ import de.gommzy.nametags.render.RenderListener;
 import net.labymod.api.LabyModAddon;
 import net.labymod.api.events.RenderEntityEvent;
 import net.labymod.core.*;
+import net.labymod.main.LabyMod;
 import net.labymod.settings.elements.SettingsElement;
 import net.minecraft.client.renderer.RenderList;
 

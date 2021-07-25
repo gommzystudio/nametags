@@ -43,6 +43,11 @@ public class RenderListener implements RenderEntityEvent {
                         if (labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD) {
                             yOffset -= 6.5D;
                         }
+                        double size;
+                        if (user.getSubTitle() != null) {
+                            size = user.getSubTitleSize();
+                            yOffset -= size*6;
+                        }
 
                         float maxNameTagHeight = LabyMod.getSettings().cosmetics ? user.getMaxNameTagHeight() : 0.0F;
 
