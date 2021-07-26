@@ -1,5 +1,6 @@
 package de.gommzy.nametags.render;
 
+import de.gommzy.nametags.Main;
 import de.gommzy.nametags.api.Badge;
 import de.gommzy.nametags.api.BadgeReciver;
 import net.labymod.api.events.RenderEntityEvent;
@@ -22,7 +23,7 @@ public class RenderListener implements RenderEntityEvent {
     public void onRender(Entity entity, double x, double y, double z, float partialTicks) {
         float fixedPlayerViewX = Minecraft.getMinecraft().getRenderManager().playerViewX * (float) (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2 ? -1 : 1);
         User user = entity instanceof EntityPlayer ? LabyMod.getInstance().getUserManager().getUser(entity.getUniqueID()) : null;
-        if (user != null && !entity.isSneaking()) {
+        if (user != null && !entity.isSneaking() && Main.addonEnabled) {
             LabyGroup labyGroup = user.getGroup();
             if (labyGroup != null) {
                 int loops = 0;
@@ -38,7 +39,8 @@ public class RenderListener implements RenderEntityEvent {
                     for (Badge badge : badgeList) {
                         loops++;
 
-                        double xOffset = badgeList.size() * 5d - (10d * (badgeList.size()-(loops-1))) + 2 * (loops - 1);
+                        double scale = (((float)Main.size)/100);
+                        double xOffset = badgeList.size() * 5d*scale - (10d*scale * (badgeList.size()-(loops-1))) + 2*scale * (loops - 1);
                         double yOffset = -10D;
                         if (labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD) {
                             yOffset -= 6.5D;
@@ -48,6 +50,8 @@ public class RenderListener implements RenderEntityEvent {
                             size = user.getSubTitleSize();
                             yOffset -= size*6;
                         }
+
+                        yOffset += 8-(8*scale);
 
                         float maxNameTagHeight = LabyMod.getSettings().cosmetics ? user.getMaxNameTagHeight() : 0.0F;
 
@@ -60,7 +64,7 @@ public class RenderListener implements RenderEntityEvent {
                         GlStateManager.disableLighting();
                         GlStateManager.disableBlend();
                         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-                        badge.renderBadge(xOffset,0);
+                        badge.renderBadge(xOffset,0,scale);
                         GlStateManager.enableLighting();
                         GlStateManager.disableBlend();
                         GlStateManager.resetColor();

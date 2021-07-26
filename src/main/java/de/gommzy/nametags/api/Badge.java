@@ -14,7 +14,7 @@ public class Badge {
         this.uuid = uuid;
     }
 
-    public void renderBadge(double x, double y) {
+    public void renderBadge(double x, double y, double scale) {
         try {
             GlStateManager.enableBlend();
             if(BadgeReciver.badgeDynamicTextureManager == null) {
@@ -22,7 +22,7 @@ public class Badge {
                 BadgeReciver.badgeDynamicTextureManager.init();
             }
             Minecraft.getMinecraft().getTextureManager().bindTexture(BadgeReciver.badgeDynamicTextureManager.getTexture(uuid,"https://laby.net/texture/badge-small/"+uuid+".png"));
-            LabyMod.getInstance().getDrawUtils().drawTexture(x, y, 255.0D, 255.0D, 8.0D, 8.0D, 1.1F);
+            LabyMod.getInstance().getDrawUtils().drawTexture(x, y, 255.0D, 255.0D, 8.0D*scale, 8.0D*scale, 1.1F);
             GlStateManager.color(1.0F, 1.0F, 1.0F);
         } catch (Exception e) {
             e.printStackTrace();
