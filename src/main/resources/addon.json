@@ -3,7 +3,7 @@
   "name": "Badges",
   "mainClass": "de.gommzy.nametags.Main",
   "description": "This addon shows LABY.net badges above the username!",
-  "version": 1,
+  "version": 2,
   "author": "Gommzy",
   "category": 2,
   "icon": "http://168.119.232.99/addon-logo.png"
