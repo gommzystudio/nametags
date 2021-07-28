@@ -23,7 +23,7 @@ public class RenderListener implements RenderEntityEvent {
     public void onRender(Entity entity, double x, double y, double z, float partialTicks) {
         float fixedPlayerViewX = Minecraft.getMinecraft().getRenderManager().playerViewX * (float) (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2 ? -1 : 1);
         User user = entity instanceof EntityPlayer ? LabyMod.getInstance().getUserManager().getUser(entity.getUniqueID()) : null;
-        if (user != null && !entity.isSneaking() && Main.addonEnabled) {
+        if (user != null && !entity.isSneaking() && Main.addonEnabled && (Main.ownBadge || user.getUuid() != LabyMod.getInstance().getPlayerUUID()) && user.getUuid().version() == 4 && user.getUuid().getLeastSignificantBits() != 0 && user.getUuid().getMostSignificantBits() != 0) {
             LabyGroup labyGroup = user.getGroup();
             if (labyGroup != null) {
                 int loops = 0;

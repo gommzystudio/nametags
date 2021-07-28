@@ -29,10 +29,6 @@ public class BadgeReciver {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                if (badges.containsKey(uuid)) {
-                    return;
-                }
-                badges.put(uuid,new ArrayList<Badge>());
                         try {
                             CloseableHttpClient httpClient = HttpClients.custom()
                                     .setSSLSocketFactory(new SSLConnectionSocketFactory(SSLContexts.custom()
@@ -72,6 +68,7 @@ public class BadgeReciver {
             if (badges.containsKey(uuid)) {
                 return badges.get(uuid);
             } else {
+                badges.put(uuid,new ArrayList<Badge>());
                 load(uuid);
             }
         } catch (Exception e) {
