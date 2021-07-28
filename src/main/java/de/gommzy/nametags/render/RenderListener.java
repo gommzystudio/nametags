@@ -31,7 +31,7 @@ public class RenderListener implements RenderEntityEvent {
                 if (tempBadgeList != null) {
                     ArrayList<Badge> badgeList = new ArrayList<Badge>();
                     for (Badge badge : tempBadgeList) {
-                        if (!(badge.uuid.equals("cbcf5a7c-d325-4c5e-b918-adbc98343195") && labyGroup.getDisplayType() != EnumGroupDisplayType.ABOVE_HEAD)) {
+                        if (!(badge.uuid.equals("cbcf5a7c-d325-4c5e-b918-adbc98343195") && labyGroup.getDisplayType() != EnumGroupDisplayType.ABOVE_HEAD) && (labyGroup.getId() == 7 && badge.uuid.equals("a4d539247fa74d27bda7dd88ab72d10e"))) {
                             badgeList.add(badge);
                         }
                     }
