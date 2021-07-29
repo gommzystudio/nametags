@@ -36,11 +36,13 @@ public class RenderListener implements RenderEntityEvent {
                         }
                     }
 
-                    for (Badge badge : badgeList) {
-                        loops++;
+                    double scale = (((float)Main.size)/100);
+                    double badgeSize = 8;
+                    double linewidth = badgeSize*scale*badgeList.size() + 2*(badgeList.size()-1);
+                    double xPos = -(linewidth/2);
 
-                        double scale = (((float)Main.size)/100);
-                        double xOffset = badgeList.size() * 5d*scale - (10d*scale * (badgeList.size()-(loops-1))) + 2*scale * (loops - 1);
+                    for (Badge badge : badgeList) {
+                        double xOffset = xPos + badgeSize*scale*loops + 2*loops;
                         double yOffset = -10D;
                         if (labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD) {
                             yOffset -= 6.5D;
@@ -51,7 +53,7 @@ public class RenderListener implements RenderEntityEvent {
                             yOffset -= size*6;
                         }
 
-                        yOffset += 8-(8*scale);
+                        yOffset += badgeSize-(badgeSize*scale);
 
                         float maxNameTagHeight = LabyMod.getSettings().cosmetics ? user.getMaxNameTagHeight() : 0.0F;
 
@@ -64,12 +66,14 @@ public class RenderListener implements RenderEntityEvent {
                         GlStateManager.disableLighting();
                         GlStateManager.disableBlend();
                         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-                        badge.renderBadge(xOffset,0,scale);
+                        badge.renderBadge(xOffset,0,scale,badgeSize);
                         GlStateManager.enableLighting();
                         GlStateManager.disableBlend();
                         GlStateManager.resetColor();
                         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                         GlStateManager.popMatrix();
+
+                        loops++;
                     }
                 }
             }
