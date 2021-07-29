@@ -14,6 +14,8 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.Scoreboard;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -21,6 +23,14 @@ import java.util.ArrayList;
 public class RenderListener implements RenderEntityEvent {
     @Override
     public void onRender(Entity entity, double x, double y, double z, float partialTicks) {
+        boolean canRender = Minecraft.isGuiEnabled() && !entity.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer) && entity.riddenByEntity == null;
+        if (!canRender) {
+            return;
+        }
+        if (!(LabyMod.getSettings()).showMyName && entity.getUniqueID().equals(LabyMod.getInstance().getPlayerUUID())) {
+            return;
+        }
+
         float fixedPlayerViewX = Minecraft.getMinecraft().getRenderManager().playerViewX * (float) (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2 ? -1 : 1);
         User user = entity instanceof EntityPlayer ? LabyMod.getInstance().getUserManager().getUser(entity.getUniqueID()) : null;
         if (user != null && !entity.isSneaking() && Main.addonEnabled && (Main.ownBadge || user.getUuid() != LabyMod.getInstance().getPlayerUUID()) && user.getUuid().version() == 4 && user.getUuid().getLeastSignificantBits() != 0 && user.getUuid().getMostSignificantBits() != 0) {
@@ -51,6 +61,13 @@ public class RenderListener implements RenderEntityEvent {
                         if (user.getSubTitle() != null) {
                             size = user.getSubTitleSize();
                             yOffset -= size*6;
+                        }
+
+                        Scoreboard scoreboard = ((EntityPlayer) entity).getWorldScoreboard();
+                        if (scoreboard != null) {
+                            ScoreObjective scoreobjective = scoreboard.getObjectiveInDisplaySlot(2);
+                            if (scoreobjective != null)
+                                yOffset -= ((LabyMod.getInstance().getDrawUtils().getFontRenderer()).FONT_HEIGHT);
                         }
 
                         yOffset += badgeSize-(badgeSize*scale);
