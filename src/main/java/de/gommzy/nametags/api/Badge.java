@@ -1,31 +1,64 @@
 package de.gommzy.nametags.api;
 
 import net.labymod.main.LabyMod;
-import net.labymod.main.ModTextures;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
-import java.io.File;
+import java.util.UUID;
 
 public class Badge {
-   public  String uuid;
 
-    public Badge(String uuid) {
+    private final int id;
+    private final UUID uuid;
+    private final String name;
+    private final String description;
+    private final String iconUrl;
+
+    private UUID[] users = new UUID[0];
+
+    public Badge(int id, UUID uuid, String name, String description, String iconUrl) {
+        this.id = id;
         this.uuid = uuid;
+        this.name = name;
+        this.description = description;
+        this.iconUrl = iconUrl;
+    }
+
+    public void setUsers(UUID[] users) {
+        this.users = users;
+    }
+
+    public UUID[] getUsers() {
+        return this.users;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public UUID getUuid() {
+        return this.uuid;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public boolean hasUser(UUID uuid) {
+        for (UUID user : this.users) {
+            if (user.equals(uuid)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void renderBadge(double x, double y, double scale, double badgeSize) {
-        try {
-            GlStateManager.enableBlend();
-            if(BadgeReciver.badgeDynamicTextureManager == null) {
-                BadgeReciver.badgeDynamicTextureManager = new BadgeDynamicTextureManager("labymodbadges", ModTextures.MISC_HEAD_QUESTION);
-                BadgeReciver.badgeDynamicTextureManager.init();
-            }
-            Minecraft.getMinecraft().getTextureManager().bindTexture(BadgeReciver.badgeDynamicTextureManager.getTexture(uuid,"https://laby.net/texture/badge-small/"+uuid+".png"));
-            LabyMod.getInstance().getDrawUtils().drawTexture(x, y, 255.0D, 255.0D, badgeSize*scale, badgeSize*scale, 1.1F);
-            GlStateManager.color(1.0F, 1.0F, 1.0F);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        GlStateManager.enableBlend();
+        LabyMod.getInstance().getDrawUtils().drawImageUrl(this.iconUrl, x, y, 256, 256, badgeSize * scale, badgeSize * scale);
+        GlStateManager.color(1.0F, 1.0F, 1.0F);
     }
 }
