@@ -3,15 +3,11 @@ package de.gommzy.nametags;
 import de.gommzy.nametags.render.RenderListener;
 import net.labymod.api.LabyModAddon;
 import net.labymod.api.events.RenderEntityEvent;
-import net.labymod.core.*;
-import net.labymod.main.LabyMod;
 import net.labymod.settings.elements.BooleanElement;
 import net.labymod.settings.elements.ControlElement;
 import net.labymod.settings.elements.SettingsElement;
 import net.labymod.settings.elements.SliderElement;
-import net.labymod.utils.Consumer;
 import net.labymod.utils.Material;
-import net.minecraft.client.renderer.RenderList;
 
 import java.util.List;
 

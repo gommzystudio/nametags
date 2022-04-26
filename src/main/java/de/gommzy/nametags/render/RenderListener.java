@@ -2,7 +2,7 @@ package de.gommzy.nametags.render;
 
 import de.gommzy.nametags.Main;
 import de.gommzy.nametags.api.Badge;
-import de.gommzy.nametags.api.BadgeReciver;
+import de.gommzy.nametags.api.BadgeRegistry;
 import net.labymod.api.events.RenderEntityEvent;
 import net.labymod.main.LabyMod;
 import net.labymod.user.User;
@@ -10,15 +10,11 @@ import net.labymod.user.group.EnumGroupDisplayType;
 import net.labymod.user.group.LabyGroup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
 import org.lwjgl.opengl.GL11;
-
-import java.util.ArrayList;
 
 public class RenderListener implements RenderEntityEvent {
     @Override
@@ -37,21 +33,14 @@ public class RenderListener implements RenderEntityEvent {
             LabyGroup labyGroup = user.getGroup();
             if (labyGroup != null) {
                 int loops = 0;
-                ArrayList<Badge> tempBadgeList = BadgeReciver.getBadge(user.getUuid().toString());
-                if (tempBadgeList != null) {
-                    ArrayList<Badge> badgeList = new ArrayList<Badge>();
-                    for (Badge badge : tempBadgeList) {
-                        if (!(badge.uuid.equals("cbcf5a7c-d325-4c5e-b918-adbc98343195") && labyGroup.getDisplayType() != EnumGroupDisplayType.ABOVE_HEAD) && !(labyGroup.getId() == 7 && badge.uuid.equals("a4d53924-7fa7-4d27-bda7-dd88ab72d10e"))) {
-                            badgeList.add(badge);
-                        }
-                    }
-
+                Badge[] badges = BadgeRegistry.INSTANCE.getCachedBadgesOfUser(user.getUuid());
+                if (badges != null) {
                     double scale = (((float)Main.size)/100);
                     double badgeSize = 8;
-                    double linewidth = badgeSize*scale*badgeList.size() + 2*(badgeList.size()-1);
+                    double linewidth = badgeSize*scale*badges.length + 2*(badges.length-1);
                     double xPos = -(linewidth/2);
 
-                    for (Badge badge : badgeList) {
+                    for (Badge badge : badges) {
                         double xOffset = xPos + badgeSize*scale*loops + 2*loops;
                         double yOffset = -10D;
                         if (labyGroup.getDisplayType() == EnumGroupDisplayType.ABOVE_HEAD) {
