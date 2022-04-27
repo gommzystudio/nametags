@@ -27,7 +27,8 @@ public class BadgeRegistry {
 
     private final Executor executor = Executors.newFixedThreadPool(5);
     private final List<Badge> badges = new ArrayList<Badge>();
-    private final Map<UUID, Badge[]> userCache = new HashMap<UUID, Badge[]>();
+
+    private Map<UUID, Badge[]> userCache = new HashMap<UUID, Badge[]>();
 
     public BadgeRegistry() {
         DownloadServerRequest.getJsonObjectAsync(URL_API_BADGES, new ServerResponse<JsonElement>() {
@@ -63,6 +64,9 @@ public class BadgeRegistry {
         this.badges.add(badge);
 
         DownloadServerRequest.getJsonObjectAsync(String.format(URL_API_BADGE_USERS, badge.getId()), new ServerResponse<JsonElement>() {
+
+            private final BadgeRegistry registry = BadgeRegistry.this;
+
             @Override
             public void success(JsonElement jsonElement) {
                 JsonArray array = jsonElement.getAsJsonArray();
@@ -74,6 +78,9 @@ public class BadgeRegistry {
                     index++;
                 }
                 badge.setUsers(uuids);
+
+                // Clear cache
+                this.registry.userCache = new HashMap<UUID, Badge[]>();
             }
 
             @Override
